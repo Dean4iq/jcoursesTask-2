@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.util.Random;
 
@@ -33,9 +33,5 @@ public class Model {
 
     public int getChosenNumb() {
         return chosenNumb;
-    }
-
-    public void setChosenNumb(int chosenNumb) {
-        this.chosenNumb = chosenNumb;
     }
 }
