@@ -1,14 +1,18 @@
 package Model;
 
+import java.util.Random;
+
 public class Model {
     private int minNumber;
     private int maxNumber;
     private int chosenNumb;
 
     public Model() {
+        final Random random = new Random();
+
         minNumber = 0;
         maxNumber = 100;
-        chosenNumb = minNumber + (int) (Math.random() * maxNumber);
+        chosenNumb = minNumber + random.nextInt() * maxNumber;
     }
 
     public int getMinNumber() {
