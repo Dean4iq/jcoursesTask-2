@@ -3,53 +3,53 @@ package controller;
 import model.Model;
 import view.View;
 
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Controller {
     private Model model;
     private View view;
-    private int attempts;
-    private LinkedList<Integer> userChoices;
 
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
-        this.attempts = 0;
-        this.userChoices = new LinkedList<Integer>();
     }
 
     public void execute() {
-        view.sendMessage(View.GREETING_MSG);
-
         Scanner scanner = new Scanner(System.in);
 
-        while (playAGame(scanner));
+        view.sendMessage(View.GREETING_MSG);
+
+        while (model.checkInputtedValue(playAGame(scanner))) ;
+
+        view.sendMessage(View.CONGRAT_MSG);
+        view.sendMessage(View.ATTEMPTS_NUMB + model.getUserAttempts().size());
+        view.sendMessage(View.INPUTTED_NUMB + model.getUserAttempts().toString());
     }
 
-    private boolean playAGame(Scanner scanner) {
-        view.sendMessage(View.CHOOSE_NUMBER_MSG + " [" + model.getMinNumber()
-                         + ";" + model.getMaxNumber() + "]");
-        view.sendMessage(View.INPUT_NUMB_MSG);
-        userChoices.add(scanner.nextInt());
-        attempts++;
+    private int playAGame(Scanner scanner) {
+        int inputtedNumber;
 
-        if (userChoices.getLast() == model.getChosenNumb()) {
-            view.sendMessage(View.CONGRAT_MSG);
-            view.sendMessage(View.ATTEMPTS_NUMB + attempts);
-            view.sendMessage(View.INPUTTED_NUMB + userChoices.toString());
-            return false;
-        } else if ((userChoices.getLast() < model.getMinNumber())
-                     || (userChoices.getLast() > model.getMaxNumber())) {
-            view.sendMessage(View.OUT_OF_BOARDS);
-        } else if (userChoices.getLast() > model.getChosenNumb()) {
-            model.setMaxNumber(userChoices.getLast());
-            view.sendMessage(View.WRONG_LOWER_MSG);
-        } else {
-            model.setMinNumber(userChoices.getLast());
-            view.sendMessage(View.WRONG_GREATER_MSG);
+        while (true) {
+            view.sendMessage(View.CHOOSE_NUMBER_MSG + View.OPENING_DASH_SYMB + model.getMinNumber()
+                    + View.POINT_DIVIDE_SYMB + model.getMaxNumber() + View.CLOSING_DASH_SYMB);
+            view.sendMessage(View.INPUT_NUMB_MSG);
 
+            while (!scanner.hasNextInt()) {
+                view.sendMessage(View.TYPE_ERROR_MSG);
+                view.sendMessage(View.CHOOSE_NUMBER_MSG + View.OPENING_DASH_SYMB + model.getMinNumber()
+                        + View.POINT_DIVIDE_SYMB + model.getMaxNumber() + View.CLOSING_DASH_SYMB);
+                view.sendMessage(View.INPUT_NUMB_MSG);
+
+                scanner.next();
+            }
+
+            if (((inputtedNumber = scanner.nextInt()) <= model.getMinNumber())
+                    || (inputtedNumber >= model.getMaxNumber())) {
+                view.sendMessage(View.OUT_OF_BOARDS);
+                continue;
+            }
+            break;
         }
-        return true;
+        return inputtedNumber;
     }
 }
